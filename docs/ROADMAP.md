@@ -63,7 +63,21 @@ Each option can be switched on or off in the interface:
 - [ ] **Normalization**: none, z-score, or min-max
 - [ ] **Dummification**: one-hot encoding of qualitative variables
 - [ ] **Class imbalance**: show the class distribution, then offer oversampling, undersampling or class weights
+- [ ] **Manual drop**: the user can delete any columns they judge useless (`selectInput(multiple = TRUE)`), and rows (select them in the `DT` table, or by condition / by index)
+- [ ] **Merge columns** when needed:
+  - quantitative: combine with an operation (sum, mean, difference, ratio) into a new column
+  - qualitative: paste the values together (e.g. `A` + `B` → `A_B`)
+  - the user names the new column and chooses whether to keep or drop the originals
 - [ ] Show the prepared dataset afterwards, with a summary of what was changed
+
+> **Note: history of processing steps (undo)**
+> Every operation (drop, merge, imputation, outliers, normalization, dummification, rebalancing…) is recorded in a **history list**:
+> - each entry stores the **step name**, its **parameters**, and the **dataset before the step** (or enough to replay it)
+> - the history is shown in the interface as an ordered list (step 1, step 2…)
+> - an **"Undo"** button goes back one step, and the user can **return to any earlier step** (everything after it is removed)
+> - a **"Reset"** button goes back to the raw data
+> - in Shiny: a list inside `reactiveValues`, e.g. `rv$history <- list(list(step = "drop_cols", params = ..., data = ...))`
+> - the same history can be reused to **describe the pipeline** in the case study
 
 ## Phase 3: Exploratory analysis (brief point 2)
 
@@ -138,3 +152,4 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-10-27 | File format: **CSV only** (`read.csv`, as in class, no extra package). Packages installed: DT, randomForest, pROC, Hmisc. |
 | 2026-10-27 | Group repo = monci2004/Programmation-web-Project. Added `.gitignore`. Our `app/` skeleton + roadmap stay local for now, pushed later. |
 | 2026-10-27 | GitHub SSH set up, `.gitignore` pushed. Teammate Achraf pushed an example single-file `app.R` (446 lines, 3 tabs: Données, Exploration, Modèles; uses DT, ggplot2, randomForest, pROC). To review before building Phase 1. |
+| 2026-10-27 | Phase 2: added manual drop of rows/columns, column merging, and a processing history with undo / go back / reset. |
