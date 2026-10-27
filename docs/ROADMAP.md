@@ -30,6 +30,36 @@ All steps share one `reactiveValues` object that holds the raw data and the prep
 - [x] Do a test deployment of a "hello world" app on shinyapps.io now, so deployment problems show up early → https://ethica79.shinyapps.io/projet_mlds/
 - [x] Set up Git or another shared folder for the group → https://github.com/monci2004/Programmation-web-Project (skeleton not pushed yet)
 
+## Review of the demo `app.R` (Achraf, 2026-10-27)
+
+The demo runs fine with its built-in dataset. It's a good base, but it's a demo: we keep the ideas, and rebuild the structure.
+
+**To keep**
+- Calculation functions separated from the UI (`traiter_na`, `supprimer_outliers`, `normaliser`, `dummifier`, `sur_echantillonner`, `evaluer`) → move them into `R/`
+- The chain of reactives (raw → no NA → no outliers → normalized → dummified) → base for the processing history
+- Oversampling applied **on the training set only, after the split** (correct)
+- Modelling tab: logistic regression + Random Forest, Precision / Recall / F-score / AUC, both ROC curves on one plot (`ggroc`), confusion matrices, importance (Gini + |z|)
+- Bivariate analysis that adapts to the variable types (Pearson/Spearman, η², χ² + Cramér's V)
+
+**To fix**
+- [ ] **`"?"` breaks loading**: tested with a UCI-style CSV, a single `"?"` turns a numeric column into a factor → `read.csv(..., na.strings = c("?", "", "NA"))` + separator / decimal options (see Phase 1)
+- [ ] **Data leakage**: normalization and imputation are computed on the whole dataset before the train/test split → compute the parameters (mean, sd, median, mode) **on train only**, then apply them to test
+- [ ] **Positive class chosen alphabetically** (`lev[2]`) → let the user choose the positive class (Precision / Recall depend on it)
+- [ ] **Split not stratified** → with an imbalanced target, the test set may have too few (or zero) minority rows, and `roc()` fails → stratified split by class
+- [ ] **Type detection too simple** (numeric = quantitative) → `0/1` or `1–5` codes should be suggested as qualitative (see Phase 1)
+- [ ] Rows with `NA` are silently dropped before training (`complete.cases`) → tell the user how many
+
+**Missing compared to this roadmap**
+- Content checks (constants, IDs, rows with many `NA`, duplicates…)
+- Manual drop / merge of columns
+- Processing history (undo) and model results history
+- Course plots: ECDF, histogram bin rules (Sturges/Scott/FD), back-to-back histograms, pie chart, `rug`, statistics table
+- `global.R` + `R/` + `modules/` split, "Case study" tab
+
+**Decision proposed**: keep the demo's functions and reactive logic, rebuild the structure (`global.R`, `R/`, one module per tab) following this roadmap.
+
+---
+
 ## Phase 1: Loading data (brief point 1)
 
 > **Clarification from the teacher:** the app accepts **only one file format** → **we chose CSV**,
@@ -163,3 +193,4 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-10-27 | GitHub SSH set up, `.gitignore` pushed. Teammate Achraf pushed an example single-file `app.R` (446 lines, 3 tabs: Données, Exploration, Modèles; uses DT, ggplot2, randomForest, pROC). To review before building Phase 1. |
 | 2026-10-27 | Phase 2: added manual drop of rows/columns, column merging, and a processing history with undo / go back / reset. |
 | 2026-10-27 | Phase 4: added a history of model results (all runs with params, preprocessing, metrics, ROC; compare / delete / export). |
+| 2026-10-27 | Reviewed the demo `app.R`: keep functions + reactive chain, fix `?` loading, data leakage, positive class, stratified split, type detection. See the review section. |
