@@ -130,6 +130,13 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 
 - [ ] Choose the models (at least 2), for example **logistic regression** + **Random Forest** (a decision tree, SVM or k-NN could be a third)
 - [ ] Train/test split (adjustable ratio), and cross-validation if possible
+- [ ] **Model parameters set by the user** (one panel per model, with sensible defaults and short help texts):
+  - common: train/test ratio, random seed (`set.seed`), **positive class**, **decision threshold** (default 0.5), stratified split on/off, number of folds if cross-validation
+  - logistic regression: variables to include, interactions on/off, regularization (optional, `glmnet`)
+  - Random Forest: `ntree` (number of trees), `mtry` (variables tried at each split), `nodesize` (minimum leaf size), `maxnodes`, class weights (`classwt`) for imbalance
+  - any extra model (decision tree, k-NN, SVM): its main parameters (`cp` / `maxdepth`, `k`, `cost` / `kernel`)
+  - optional: **"Auto-tune"** button that tries a small grid of values (e.g. `mtry`) by cross-validation and keeps the best
+  - the chosen parameters are saved in the **model results history** (see note below)
 - [ ] Metrics for each model: **Precision, Recall, F-score**, confusion matrix
 - [ ] **ROC curve + AUC**, with the models plotted on the same graph
 - [ ] Table comparing the models side by side
@@ -194,3 +201,4 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-10-27 | Phase 2: added manual drop of rows/columns, column merging, and a processing history with undo / go back / reset. |
 | 2026-10-27 | Phase 4: added a history of model results (all runs with params, preprocessing, metrics, ROC; compare / delete / export). |
 | 2026-10-27 | Reviewed the demo `app.R`: keep functions + reactive chain, fix `?` loading, data leakage, positive class, stratified split, type detection. See the review section. |
+| 2026-10-27 | Phase 4: user-set model parameters (common + per model, optional auto-tune). First `mod_donnees` written locally (`R/lecture.R`, `modules/mod_donnees.R`), not pushed yet. |
