@@ -106,6 +106,15 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 - [ ] **Feature importance** (Random Forest importance, logistic coefficients)
 - [ ] Handle multi-class targets (macro-averaged metrics, one-vs-rest ROC), or limit the app to binary targets and say so
 
+> **Note: history of model results**
+> Every training run is saved in a **results history** so we can compare runs, not just the models of the current run:
+> - each entry stores: **run number / time**, **model** and its **parameters** (e.g. `ntree`), **train/test split**, the **preprocessing steps applied** (taken from the processing history of Phase 2), the **metrics** (Precision, Recall, F-score, AUC), and what's needed to **redraw the ROC curve** and feature importance
+> - shown as a **table of all runs** (sortable with `DT`), with the best value of each metric highlighted
+> - the user can **select several runs** to overlay their ROC curves and compare them
+> - buttons to **delete a run** or **clear the history**, and to **export it as CSV** (useful for the case study report)
+> - in Shiny: a list inside `reactiveValues`, e.g. `rv$model_history`, with one entry added each time "Train" is clicked
+> - this makes it easy to answer questions like *"did normalization improve the Random Forest?"*
+
 ## Phase 5: Case study (brief point 3)
 
 - [ ] Pick the dataset from the list in the brief
@@ -153,3 +162,4 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-10-27 | Group repo = monci2004/Programmation-web-Project. Added `.gitignore`. Our `app/` skeleton + roadmap stay local for now, pushed later. |
 | 2026-10-27 | GitHub SSH set up, `.gitignore` pushed. Teammate Achraf pushed an example single-file `app.R` (446 lines, 3 tabs: Données, Exploration, Modèles; uses DT, ggplot2, randomForest, pROC). To review before building Phase 1. |
 | 2026-10-27 | Phase 2: added manual drop of rows/columns, column merging, and a processing history with undo / go back / reset. |
+| 2026-10-27 | Phase 4: added a history of model results (all runs with params, preprocessing, metrics, ROC; compare / delete / export). |
