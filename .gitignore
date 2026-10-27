@@ -1,1 +1,23 @@
+# Fichiers de session R
+.Rhistory
+.RData
+.Rapp.history
+.Ruserdata
+
+# RStudio
+.Rproj.user/
+*.Rproj
+
+# Déploiement shinyapps.io (propre à chaque compte)
+rsconnect/
+
+# Fichiers temporaires / système
+*.tmp
+*~
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Environnement R local
+.Renviron
+renv/library/
