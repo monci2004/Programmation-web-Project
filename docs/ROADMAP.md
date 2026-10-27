@@ -82,6 +82,9 @@ The demo runs fine with its built-in dataset. It's a good base, but it's a demo:
   - [ ] **Row with many `NA`** (e.g. missing in more than 50% of its columns, adjustable threshold) → filling it in would mostly create made-up values, so suggest dropping the row. Show how many rows are affected, plus a histogram of "number of `NA` per row"
 - [ ] Summary table per variable: detected type, number of distinct values / categories, % missing, number of outliers, warnings
 - [ ] Let the user choose the **target variable** (the class to predict)
+  - **by default, the target is the last column** of the file (common convention in UCI datasets)
+  - the user can **change it** at any time (`selectInput`); the change updates the class distribution, the checks and the models
+  - warn if the chosen target looks wrong: quantitative with many distinct values, only one class, or an identifier column
 
 ## Phase 2: Preprocessing (brief point 1)
 
@@ -202,3 +205,4 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-10-27 | Phase 4: added a history of model results (all runs with params, preprocessing, metrics, ROC; compare / delete / export). |
 | 2026-10-27 | Reviewed the demo `app.R`: keep functions + reactive chain, fix `?` loading, data leakage, positive class, stratified split, type detection. See the review section. |
 | 2026-10-27 | Phase 4: user-set model parameters (common + per model, optional auto-tune). First `mod_donnees` written locally (`R/lecture.R`, `modules/mod_donnees.R`), not pushed yet. |
+| 2026-10-27 | Target variable: last column by default, changeable by the user. |
