@@ -28,7 +28,7 @@ All steps share one `reactiveValues` object that holds the raw data and the prep
 - [x] Agree on the app layout (one `app.R` or `ui.R` + `server.R` + `R/` helper files)
 - [x] Pick the R packages (see the list below) and check they install
 - [x] Do a test deployment of a "hello world" app on shinyapps.io now, so deployment problems show up early → https://ethica79.shinyapps.io/projet_mlds/
-- [x] Set up Git or another shared folder for the group → https://github.com/monci2004/Programmation-web-Project (skeleton not pushed yet)
+- [x] Set up Git or another shared folder for the group → https://github.com/monci2004/Programmation-web-Project
 
 ## Review of the demo `app.R` (Achraf, 2026-10-27)
 
@@ -42,11 +42,11 @@ The demo runs fine with its built-in dataset. It's a good base, but it's a demo:
 - Bivariate analysis that adapts to the variable types (Pearson/Spearman, η², χ² + Cramér's V)
 
 **To fix**
-- [ ] **`"?"` breaks loading**: tested with a UCI-style CSV, a single `"?"` turns a numeric column into a factor → `read.csv(..., na.strings = c("?", "", "NA"))` + separator / decimal options (see Phase 1)
+- [x] **`"?"` breaks loading**: tested with a UCI-style CSV, a single `"?"` turns a numeric column into a factor → `read.csv(..., na.strings = c("?", "", "NA"))` + separator / decimal options (see Phase 1)
 - [ ] **Data leakage**: normalization and imputation are computed on the whole dataset before the train/test split → compute the parameters (mean, sd, median, mode) **on train only**, then apply them to test
 - [ ] **Positive class chosen alphabetically** (`lev[2]`) → let the user choose the positive class (Precision / Recall depend on it)
 - [ ] **Split not stratified** → with an imbalanced target, the test set may have too few (or zero) minority rows, and `roc()` fails → stratified split by class
-- [ ] **Type detection too simple** (numeric = quantitative) → `0/1` or `1–5` codes should be suggested as qualitative (see Phase 1)
+- [x] **Type detection too simple** (numeric = quantitative) → `0/1` or `1–5` codes should be suggested as qualitative (see Phase 1)
 - [ ] Rows with `NA` are silently dropped before training (`complete.cases`) → tell the user how many
 
 **Missing compared to this roadmap**
@@ -65,23 +65,23 @@ The demo runs fine with its built-in dataset. It's a good base, but it's a demo:
 > **Clarification from the teacher:** the app accepts **only one file format** → **we chose CSV**,
 > but it must **analyse what's inside the file** and spot the problems on its own.
 
-- [ ] Upload a **CSV file only** (`fileInput` with `accept = ".csv"`), with options for separator (`,` `;` tab), decimal mark (`.` `,`) and header
-- [ ] Preview the data (table, dimensions)
-- [ ] **Detect each variable's type automatically** (quantitative or qualitative), and let the user change it by hand
+- [x] Upload a **CSV file only** (`fileInput` with `accept = ".csv"`), with options for separator (`,` `;` tab), decimal mark (`.` `,`) and header
+- [x] Preview the data (table, dimensions)
+- [x] **Detect each variable's type automatically** (quantitative or qualitative), and let the user change it by hand
   - numbers with few distinct values (e.g. 0/1, 1–5) → probably qualitative
   - text that is really numbers (e.g. `"3,5"` with a comma decimal) → convert to quantitative
-- [ ] **Content checks** (shown as warnings, with an option to drop the column or row):
-  - [ ] **Constant** column (a single value) → useless, suggest dropping it
-  - [ ] **Almost constant** column (e.g. more than 95% the same value)
-  - [ ] **Identifier** column (every value different, e.g. `id`, `patient_no`) → suggest dropping it
-  - [ ] **Missing values written as codes**: `"?"`, `""`, `"NA"`, `"-"`, `-999`… → turn them into real `NA` (UCI datasets use `"?"`)
-  - [ ] **Duplicate rows** and **duplicate columns**
-  - [ ] **Mixed column** (mostly numbers with a few text values)
-  - [ ] Qualitative column with **too many categories**
-  - [ ] Column that is **entirely empty**, or with too many `NA` (e.g. > 50%)
-  - [ ] **Row with many `NA`** (e.g. missing in more than 50% of its columns, adjustable threshold) → filling it in would mostly create made-up values, so suggest dropping the row. Show how many rows are affected, plus a histogram of "number of `NA` per row"
-- [ ] Summary table per variable: detected type, number of distinct values / categories, % missing, number of outliers, warnings
-- [ ] Let the user choose the **target variable** (the class to predict)
+- [x] **Content checks** (shown as warnings, with an option to drop the column or row):
+  - [x] **Constant** column (a single value) → useless, suggest dropping it
+  - [x] **Almost constant** column (e.g. more than 95% the same value)
+  - [x] **Identifier** column (every value different, e.g. `id`, `patient_no`) → suggest dropping it
+  - [x] **Missing values written as codes**: `"?"`, `""`, `"NA"`, `"-"`, `-999`… → turn them into real `NA` (UCI datasets use `"?"`)
+  - [x] **Duplicate rows** and **duplicate columns**
+  - [x] **Mixed column** (mostly numbers with a few text values)
+  - [x] Qualitative column with **too many categories**
+  - [x] Column that is **entirely empty**, or with too many `NA` (e.g. > 50%)
+  - [x] **Row with many `NA`** (e.g. missing in more than 50% of its columns, adjustable threshold) → filling it in would mostly create made-up values, so suggest dropping the row. Show how many rows are affected, plus a histogram of "number of `NA` per row"
+- [x] Summary table per variable: detected type, number of distinct values / categories, % missing, number of outliers, warnings
+- [x] Let the user choose the **target variable** (the class to predict)
   - **by default, the target is the last column** of the file (common convention in UCI datasets)
   - the user can **change it** at any time (`selectInput`); the change updates the class distribution, the checks and the models
   - warn if the chosen target looks wrong: quantitative with many distinct values, only one class, or an identifier column
@@ -206,3 +206,6 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-10-27 | Reviewed the demo `app.R`: keep functions + reactive chain, fix `?` loading, data leakage, positive class, stratified split, type detection. See the review section. |
 | 2026-10-27 | Phase 4: user-set model parameters (common + per model, optional auto-tune). First `mod_donnees` written locally (`R/lecture.R`, `modules/mod_donnees.R`), not pushed yet. |
 | 2026-10-27 | Target variable: last column by default, changeable by the user. |
+| 2026-11-02 | Phase 1: type detection (`R/types.R`, with reasons + manual override) and content checks (`R/verifications.R`) done in `mod_donnees`. Checks only warn; dropping comes in Phase 2 with the undo history. Local, not pushed. |
+| 2026-11-02 | Target variable: dropdown (last column by default), class table + bar chart, checks (one class, continuous, ID, NA, imbalance). `mod_donnees` now returns `list(data, cible)`. Local, not pushed. |
+| 2026-11-02 | Summary table per variable (`R/resume.R`): role, type, distinct, % NA, outliers (IQR), short summary, alerts. **Phase 1 complete**. Pushed with the 5-tab skeleton; demo moved to `docs/demo_achraf.R`. |
