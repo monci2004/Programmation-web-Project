@@ -11,9 +11,10 @@ source("global.R")
 ui <- navbarPage(
   # Titre de l'application
   title = "Exploration & Classification",
+  id    = "onglets",                 # identifiant : permet de changer d'onglet depuis le serveur
 
   tabPanel("1. Données",       mod_donnees_ui("donnees")),
-  tabPanel("2. Préparation",   h3("Prétraitement")),
+  tabPanel("2. Préparation",   mod_preparation_ui("preparation")),
   tabPanel("3. Exploration",   h3("Analyse exploratoire")),
   tabPanel("4. Modélisation",  h3("Entraînement des modèles")),
   tabPanel("5. Étude de cas",  h3("Étude de cas"))
@@ -30,12 +31,22 @@ server <- function(input, output, session){
 
   # Module 1 : chargement des données
   # ----
-  # (le module renvoie une liste : data = les données, cible = le nom de la cible)
+  # (le module renvoie une liste : data et cible validées, valide = compteur de validations)
   donnees <- mod_donnees_server("donnees")
   observe({
     rv$raw    <- donnees$data()
     rv$target <- donnees$cible()
   })
+
+  # Après chaque validation dans l'onglet 1 : on passe à l'onglet 2
+  observeEvent(donnees$valide(), {
+    updateNavbarPage(session, "onglets", selected = "2. Préparation")
+  }, ignoreInit = TRUE)
+
+  # Module 2 : préparation (reçoit les données du module 1)
+  # ----
+  preparation <- mod_preparation_server("preparation", donnees = donnees)
+  observe({ rv$prepared <- preparation$data() })
 }
 
 # Association interface & commandes

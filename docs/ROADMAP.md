@@ -85,8 +85,15 @@ The demo runs fine with its built-in dataset. It's a good base, but it's a demo:
   - **by default, the target is the last column** of the file (common convention in UCI datasets)
   - the user can **change it** at any time (`selectInput`); the change updates the class distribution, the checks and the models
   - warn if the chosen target looks wrong: quantitative with many distinct values, only one class, or an identifier column
+- [x] **"Validate and go to preparation" button**: refused if the target has an error; only validated data reach tab 2; status shows validated / not validated / changes not validated; the app then switches to tab 2
 
 ## Phase 2: Preprocessing (brief point 1)
+
+> **Design: two kinds of operations** (to avoid data leakage)
+> - **A. Cleaning** (safe on the whole dataset): drop columns / rows, duplicates, rows with many `NA`, merge columns, group rare categories, outliers → applied **in tab 2**, through the history
+> - **B. Learned transformations** (they compute something from the data): imputation, normalization, dummification, rebalancing → **chosen** in tab 2, but **applied in Modelling**, fitted on train only, then applied to test
+>
+> **When to drop a column**: only when it brings nothing by nature (ID, constant, almost empty, duplicate) or by a **justified study choice** (noted in the history). Example: `Height` explains half of the variance of `Sex` in `students.csv` (η² = 0.51), so it must stay if the target is `Sex`. Feature importance (Phase 4) tells which variables really matter.
 
 Each option can be switched on or off in the interface:
 
@@ -96,7 +103,7 @@ Each option can be switched on or off in the interface:
 - [ ] **Normalization**: none, z-score, or min-max
 - [ ] **Dummification**: one-hot encoding of qualitative variables
 - [ ] **Class imbalance**: show the class distribution, then offer oversampling, undersampling or class weights
-- [ ] **Manual drop**: the user can delete any columns they judge useless (`selectInput(multiple = TRUE)`), and rows (select them in the `DT` table, or by condition / by index)
+- [x] **Manual drop**: the user can delete any columns they judge useless (`selectInput(multiple = TRUE)`), and rows (select them in the `DT` table, or by condition / by index)
 - [ ] **Merge columns** when needed:
   - quantitative: combine with an operation (sum, mean, difference, ratio) into a new column
   - qualitative: paste the values together (e.g. `A` + `B` → `A_B`)
@@ -111,6 +118,10 @@ Each option can be switched on or off in the interface:
 > - a **"Reset"** button goes back to the raw data
 > - in Shiny: a list inside `reactiveValues`, e.g. `rv$history <- list(list(step = "drop_cols", params = ..., data = ...))`
 > - the same history can be reused to **describe the pipeline** in the case study
+>
+> **Done (2026-11-09)**: `R/historique.R` + `modules/mod_preparation.R`. Each step stores a **copy of the data** (simple and reliable for datasets of a few MB; for very large files, replaying the operations from `params` would be the alternative). History resets when new data are validated in tab 1.
+>
+> **Suggestions from tab 1 are reused**: alerts table, column drop list pre-filled (empty, constant, ID, too many NA, duplicate), buttons "drop the N rows with too many NA" / "drop the N duplicate rows" (counts recomputed on the current data, IDs ignored for duplicates), manual row selection in the table.
 
 ## Phase 3: Exploratory analysis (brief point 2)
 
@@ -209,3 +220,7 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-11-02 | Phase 1: type detection (`R/types.R`, with reasons + manual override) and content checks (`R/verifications.R`) done in `mod_donnees`. Checks only warn; dropping comes in Phase 2 with the undo history. Local, not pushed. |
 | 2026-11-02 | Target variable: dropdown (last column by default), class table + bar chart, checks (one class, continuous, ID, NA, imbalance). `mod_donnees` now returns `list(data, cible)`. Local, not pushed. |
 | 2026-11-02 | Summary table per variable (`R/resume.R`): role, type, distinct, % NA, outliers (IQR), short summary, alerts. **Phase 1 complete**. Pushed with the 5-tab skeleton; demo moved to `docs/demo_achraf.R`. |
+| 2026-11-09 | Phase 2 started: processing history (`R/historique.R`: snapshot of the data at each step; undo / go back / reset) in `mod_preparation`, with column drop as first operation. History resets when tab 1 data change. Local, not pushed. |
+| 2026-11-09 | Tab 1: "Valider et passer à la préparation" button. Refused if the target has an error; only validated data/target reach tab 2; status shows validated / not validated / changes not validated; app switches to tab 2 after validating. Local, not pushed. |
+| 2026-11-09 | Tab 2 reuses tab 1 suggestions: alerts table, column drop list pre-filled (empty, constant, ID, too many NA, duplicate), buttons to drop rows with too many NA / duplicates (counts recomputed on current data, IDs ignored for duplicates). Manual row selection still to do. Local, not pushed. |
+| 2026-11-09 | Manual row drop: click rows in the tab 2 table (`input$apercu_rows_selected`), delete through the history; detail keeps the original row numbers. Manual drop item done (drop by condition not done). Local, not pushed. |

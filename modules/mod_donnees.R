@@ -5,7 +5,8 @@
 # - détection (et correction) du type de chaque variable
 # - vérifications du contenu (constantes, identifiants, doublons, NA...)
 # - choix de la variable cible (dernière colonne par défaut)
-# - renvoie une liste : data (données typées) et cible (nom de la cible)
+# - bouton de validation : seules les données validées passent aux autres onglets
+# - renvoie une liste : data, cible, alertes, seuil_na_ligne (validés) et valide (compteur)
 # ==================================================================
 
 # Interface du module
@@ -32,7 +33,12 @@ mod_donnees_ui <- function(id) {
       hr(),
 
       # Variable à prédire (par défaut : la dernière colonne)
-      selectInput(ns("cible"), "Variable cible (à prédire)", choices = NULL)
+      selectInput(ns("cible"), "Variable cible (à prédire)", choices = NULL),
+
+      # Validation : les données ne passent à l'onglet 2 qu'après ce clic
+      actionButton(ns("btn_valider"), "Valider et passer à la préparation",
+                   icon = icon("check"), class = "btn-success"),
+      uiOutput(ns("statut"))
     ),
     mainPanel(
       tabsetPanel(
@@ -259,10 +265,57 @@ mod_donnees_server <- function(id) {
         formatStyle("Alertes", color = "#b45309")
     })
 
-    # On renvoie aux autres modules : les données ET le nom de la cible
+    # Validation du choix
+    # ----
+    # Seules les données validées sont transmises aux autres onglets
+    valide <- reactiveValues(data = NULL, cible = NULL, alertes = NULL,
+                             seuil_na_ligne = 0.5, n = 0)
+
+    observeEvent(input$btn_valider, {
+      if (is.null(data())) {
+        showNotification("Chargez d'abord un fichier.", type = "error")
+        return()
+      }
+      v <- verifier_cible(data_finales()[[input$cible]], input$cible, alertes())
+      if (any(v$Gravite == "erreur")) {
+        showNotification(paste("Validation impossible :",
+                               paste(v$Message[v$Gravite == "erreur"], collapse = " ")),
+                         type = "error", duration = 8)
+        return()
+      }
+      valide$data  <- data_finales()
+      valide$cible <- input$cible
+      valide$alertes        <- alertes()               # suggestions pour l'onglet 2
+      valide$seuil_na_ligne <- input$seuil_na_ligne / 100
+      valide$n     <- valide$n + 1          # compteur : sert à changer d'onglet
+      showNotification(sprintf("Choix validé : %d lignes, %d colonnes, cible '%s'.",
+                               nrow(valide$data), ncol(valide$data), valide$cible),
+                       type = "message")
+    })
+
+    # Statut affiché sous le bouton
+    output$statut <- renderUI({
+      if (is.null(valide$data))
+        return(p(style = "color: grey; margin-top: 8px;", "Non validé"))
+      a_jour <- isTRUE(input$cible == valide$cible) &&
+                isTRUE(identical(data_finales(), valide$data))
+      if (a_jour)
+        p(style = "color: #2e7d32; margin-top: 8px;",
+          icon("check"), sprintf(" Validé (cible : %s)", valide$cible))
+      else
+        p(style = "color: #b45309; margin-top: 8px;",
+          icon("triangle-exclamation"), " Modifications non validées")
+    })
+
+    # On renvoie aux autres modules : les données validées, la cible validée,
+    # les alertes et le seuil de NA (suggestions pour l'onglet 2),
+    # et un compteur de validations (pour passer à l'onglet suivant)
     return(list(
-      data  = data_finales,
-      cible = reactive(input$cible)
+      data           = reactive({ req(valide$data);  valide$data }),
+      cible          = reactive({ req(valide$cible); valide$cible }),
+      alertes        = reactive({ req(valide$alertes); valide$alertes }),
+      seuil_na_ligne = reactive(valide$seuil_na_ligne),
+      valide         = reactive(valide$n)
     ))
   })
 }
