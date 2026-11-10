@@ -15,7 +15,7 @@ ui <- navbarPage(
 
   tabPanel("1. Données",       mod_donnees_ui("donnees")),
   tabPanel("2. Préparation",   mod_preparation_ui("preparation")),
-  tabPanel("3. Exploration",   h3("Analyse exploratoire")),
+  tabPanel("3. Exploration",   mod_exploration_ui("exploration")),
   tabPanel("4. Modélisation",  mod_modelisation_ui("modelisation")),
   tabPanel("5. Étude de cas",  h3("Étude de cas"))
 )
@@ -52,6 +52,10 @@ server <- function(input, output, session){
     rv$prepared        <- preparation$data()
     rv$transformations <- preparation$transformations()
   })
+
+  # Module 3 : analyse exploratoire (reçoit `preparation` du module 2)
+  # ----
+  mod_exploration_server("exploration", preparation = preparation)
 
   # Module 4 : modélisation (reçoit la liste réactive `preparation` du module 2)
   # ----

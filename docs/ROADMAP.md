@@ -130,15 +130,15 @@ Reuse what we saw in class (`cours1_unidimensionelle`, `Cours2_bidimensionel`).
 The course scripts hard-code column names (EF/CA, Sex/Level). We make them work for **any variable the user picks**, using `selectInput`.
 
 **One variable at a time** (course 1)
-- [ ] Statistics table: counts, cumulative counts, frequencies, cumulative frequencies
-- [ ] Quantitative: histogram (bin rule Sturges/Scott/FD, counts or density, density curve, quantile lines), boxplot + `rug`, empirical cumulative distribution (ECDF), centre and spread (min, max, mean, median, Q1, Q3, variance, standard deviation)
-- [ ] Qualitative: bar chart, pie chart, frequency table
+- [x] Statistics table: counts, cumulative counts, frequencies, cumulative frequencies
+- [x] Quantitative: histogram (bin rule Sturges/Scott/FD, counts or density, density curve, quantile lines), boxplot + `rug`, empirical cumulative distribution (ECDF), centre and spread (min, max, mean, median, Q1, Q3, variance, standard deviation)
+- [x] Qualitative: bar chart, pie chart, frequency table
 
 **Pairs of variables** (course 2)
-- [ ] Quant × Quant: scatter plot, back-to-back histograms (`Hmisc::histbackback`), covariance, **Pearson correlation r**, regression line `lm`
-- [ ] Quant × Qual: boxplots side by side (base R + ggplot with jitter), **correlation ratio η** (between-group vs within-group variance)
-- [ ] Qual × Qual: contingency table, bar charts (stacked, side by side, profile plot with `position="fill"`), **χ², Φ², Cramér's V**
-- [ ] Optional: correlation matrix (heatmap) for all quantitative variables
+- [x] Quant × Quant: scatter plot, back-to-back histograms (`Hmisc::histbackback`), covariance, **Pearson correlation r**, regression line `lm`
+- [x] Quant × Qual: boxplots side by side (base R + ggplot with jitter), **correlation ratio η** (between-group vs within-group variance)
+- [x] Qual × Qual: contingency table, bar charts (stacked, side by side, profile plot with `position="fill"`), **χ², Φ², Cramér's V**
+- [x] Optional: correlation matrix (heatmap) for all quantitative variables
 
 ## Phase 4: Modelling (brief point 2)
 
@@ -224,3 +224,6 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 | 2026-11-09 | Tab 1: "Valider et passer à la préparation" button. Refused if the target has an error; only validated data/target reach tab 2; status shows validated / not validated / changes not validated; app switches to tab 2 after validating. Local, not pushed. |
 | 2026-11-09 | Tab 2 reuses tab 1 suggestions: alerts table, column drop list pre-filled (empty, constant, ID, too many NA, duplicate), buttons to drop rows with too many NA / duplicates (counts recomputed on current data, IDs ignored for duplicates). Manual row selection still to do. Local, not pushed. |
 | 2026-11-09 | Manual row drop: click rows in the tab 2 table (`input$apercu_rows_selected`), delete through the history; detail keeps the original row numbers. Manual drop item done (drop by condition not done). Local, not pushed. |
+| 2026-11-10 | **Phase 2 complete**: added IQR outliers (keep/cap/drop), rare categories grouping into "Autre", column merging (sum/mean/diff/ratio/concat) in `R/nettoyage.R`, and learned transformations config + train-only fit/apply in `R/transformations.R` + `modules/mod_preparation.R`. |
+| 2026-11-10 | **Phase 4 complete**: created `R/modelisation.R` (stratified split, zero-leakage train/test preprocessing, logistic regression + Random Forest with auto-tune, metrics, ROC, feature importance, run history) and `modules/mod_modelisation.R`, connected in `app.R`. |
+| 2026-11-10 | **Phase 3 complete**: created `R/exploration.R` and `modules/mod_exploration.R` (Course 1 univariate tables/plots + Course 2 bivariate Quant×Quant, Quant×Qual, Qual×Qual + correlation heatmap), connected in `app.R`. |

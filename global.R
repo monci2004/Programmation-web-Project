@@ -6,6 +6,15 @@
 # que les modules (chargés ici) ne voient pas
 # ==================================================================
 
+# Installation automatique des packages s'ils manquent sur la machine locale
+pkgs_requis <- c("shiny", "DT", "ggplot2", "randomForest", "pROC", "Hmisc")
+pkgs_manquants <- pkgs_requis[!sapply(pkgs_requis, requireNamespace, quietly = TRUE)]
+if (length(pkgs_manquants) > 0) {
+  message("Installation automatique des packages manquants : ",
+          paste(pkgs_manquants, collapse = ", "))
+  install.packages(pkgs_manquants, repos = "https://cloud.r-project.org")
+}
+
 library(shiny)
 library(DT)
 library(ggplot2)
@@ -13,5 +22,5 @@ library(randomForest)
 library(pROC)
 
 # Fonctions de calcul, puis modules (un fichier par onglet)
-for (f in list.files("R", pattern = "\\.R$", full.names = TRUE)) source(f)
-for (f in list.files("modules", pattern = "\\.R$", full.names = TRUE)) source(f)
+for (f in list.files("R", pattern = "\\.R$", full.names = TRUE)) source(f, encoding = "UTF-8")
+for (f in list.files("modules", pattern = "\\.R$", full.names = TRUE)) source(f, encoding = "UTF-8")
