@@ -43,11 +43,11 @@ The demo runs fine with its built-in dataset. It's a good base, but it's a demo:
 
 **To fix**
 - [x] **`"?"` breaks loading**: tested with a UCI-style CSV, a single `"?"` turns a numeric column into a factor → `read.csv(..., na.strings = c("?", "", "NA"))` + separator / decimal options (see Phase 1)
-- [ ] **Data leakage**: normalization and imputation are computed on the whole dataset before the train/test split → compute the parameters (mean, sd, median, mode) **on train only**, then apply them to test
-- [ ] **Positive class chosen alphabetically** (`lev[2]`) → let the user choose the positive class (Precision / Recall depend on it)
-- [ ] **Split not stratified** → with an imbalanced target, the test set may have too few (or zero) minority rows, and `roc()` fails → stratified split by class
+- [x] **Data leakage**: normalization and imputation are computed on the whole dataset before the train/test split → compute the parameters (mean, sd, median, mode) **on train only**, then apply them to test
+- [x] **Positive class chosen alphabetically** (`lev[2]`) → let the user choose the positive class (Precision / Recall depend on it)
+- [x] **Split not stratified** → with an imbalanced target, the test set may have too few (or zero) minority rows, and `roc()` fails → stratified split by class
 - [x] **Type detection too simple** (numeric = quantitative) → `0/1` or `1–5` codes should be suggested as qualitative (see Phase 1)
-- [ ] Rows with `NA` are silently dropped before training (`complete.cases`) → tell the user how many
+- [x] Rows with `NA` are silently dropped before training (`complete.cases`) → tell the user how many
 
 **Missing compared to this roadmap**
 - Content checks (constants, IDs, rows with many `NA`, duplicates…)
@@ -142,20 +142,20 @@ The course scripts hard-code column names (EF/CA, Sex/Level). We make them work 
 
 ## Phase 4: Modelling (brief point 2)
 
-- [ ] Choose the models (at least 2), for example **logistic regression** + **Random Forest** (a decision tree, SVM or k-NN could be a third)
-- [ ] Train/test split (adjustable ratio), and cross-validation if possible
-- [ ] **Model parameters set by the user** (one panel per model, with sensible defaults and short help texts):
+- [x] Choose the models (at least 2), for example **logistic regression** + **Random Forest** (a decision tree, SVM or k-NN could be a third)
+- [x] Train/test split (adjustable ratio), and cross-validation if possible
+- [x] **Model parameters set by the user** (one panel per model, with sensible defaults and short help texts):
   - common: train/test ratio, random seed (`set.seed`), **positive class**, **decision threshold** (default 0.5), stratified split on/off, number of folds if cross-validation
   - logistic regression: variables to include, interactions on/off, regularization (optional, `glmnet`)
   - Random Forest: `ntree` (number of trees), `mtry` (variables tried at each split), `nodesize` (minimum leaf size), `maxnodes`, class weights (`classwt`) for imbalance
   - any extra model (decision tree, k-NN, SVM): its main parameters (`cp` / `maxdepth`, `k`, `cost` / `kernel`)
   - optional: **"Auto-tune"** button that tries a small grid of values (e.g. `mtry`) by cross-validation and keeps the best
   - the chosen parameters are saved in the **model results history** (see note below)
-- [ ] Metrics for each model: **Precision, Recall, F-score**, confusion matrix
-- [ ] **ROC curve + AUC**, with the models plotted on the same graph
-- [ ] Table comparing the models side by side
-- [ ] **Feature importance** (Random Forest importance, logistic coefficients)
-- [ ] Handle multi-class targets (macro-averaged metrics, one-vs-rest ROC), or limit the app to binary targets and say so
+- [x] Metrics for each model: **Precision, Recall, F-score**, confusion matrix
+- [x] **ROC curve + AUC**, with the models plotted on the same graph
+- [x] Table comparing the models side by side
+- [x] **Feature importance** (Random Forest importance, logistic coefficients)
+- [x] Handle multi-class targets (macro-averaged metrics, one-vs-rest ROC), or limit the app to binary targets and say so
 
 > **Note: history of model results**
 > Every training run is saved in a **results history** so we can compare runs, not just the models of the current run:

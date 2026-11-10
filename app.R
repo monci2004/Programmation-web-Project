@@ -16,7 +16,7 @@ ui <- navbarPage(
   tabPanel("1. Données",       mod_donnees_ui("donnees")),
   tabPanel("2. Préparation",   mod_preparation_ui("preparation")),
   tabPanel("3. Exploration",   h3("Analyse exploratoire")),
-  tabPanel("4. Modélisation",  h3("Entraînement des modèles")),
+  tabPanel("4. Modélisation",  mod_modelisation_ui("modelisation")),
   tabPanel("5. Étude de cas",  h3("Étude de cas"))
 )
 
@@ -28,6 +28,7 @@ server <- function(input, output, session){
   rv <- reactiveValues(raw = NULL,             # données brutes chargées
                        prepared = NULL,        # données après nettoyage (onglet 2)
                        transformations = NULL, # transformations apprises configurées (pour onglet 4)
+                       model_history = NULL,   # historique des modèles entraînés (onglet 4)
                        target = NULL)          # nom de la variable cible
 
   # Module 1 : chargement des données
@@ -50,6 +51,13 @@ server <- function(input, output, session){
   observe({
     rv$prepared        <- preparation$data()
     rv$transformations <- preparation$transformations()
+  })
+
+  # Module 4 : modélisation (reçoit la liste réactive `preparation` du module 2)
+  # ----
+  modelisation <- mod_modelisation_server("modelisation", preparation = preparation)
+  observe({
+    rv$model_history <- modelisation$historique()
   })
 }
 

@@ -8,6 +8,9 @@
 
 library(shiny)
 library(DT)
+library(ggplot2)
+library(randomForest)
+library(pROC)
 
 # Fonctions de calcul, puis modules (un fichier par onglet)
 for (f in list.files("R", pattern = "\\.R$", full.names = TRUE)) source(f)
