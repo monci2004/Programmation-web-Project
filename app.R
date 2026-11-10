@@ -25,9 +25,10 @@ server <- function(input, output, session){
 
   # Valeurs partagées entre tous les onglets
   # ----
-  rv <- reactiveValues(raw = NULL,       # données brutes chargées
-                       prepared = NULL,  # données après prétraitement
-                       target = NULL)    # nom de la variable cible
+  rv <- reactiveValues(raw = NULL,             # données brutes chargées
+                       prepared = NULL,        # données après nettoyage (onglet 2)
+                       transformations = NULL, # transformations apprises configurées (pour onglet 4)
+                       target = NULL)          # nom de la variable cible
 
   # Module 1 : chargement des données
   # ----
@@ -46,7 +47,10 @@ server <- function(input, output, session){
   # Module 2 : préparation (reçoit les données du module 1)
   # ----
   preparation <- mod_preparation_server("preparation", donnees = donnees)
-  observe({ rv$prepared <- preparation$data() })
+  observe({
+    rv$prepared        <- preparation$data()
+    rv$transformations <- preparation$transformations()
+  })
 }
 
 # Association interface & commandes

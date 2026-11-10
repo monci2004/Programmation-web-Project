@@ -97,18 +97,18 @@ The demo runs fine with its built-in dataset. It's a good base, but it's a demo:
 
 Each option can be switched on or off in the interface:
 
-- [ ] **Missing values**: first drop the rows/columns that are too empty (thresholds from Phase 1), then for the rest drop rows or fill in with the mean/median (quantitative) or the most frequent value (qualitative)
-- [ ] **Outliers**: detect them with the IQR rule (boxplot rule), then keep, remove or cap them
-- [ ] **Qualitative variables with many categories**: merge rare categories into "Other"
-- [ ] **Normalization**: none, z-score, or min-max
-- [ ] **Dummification**: one-hot encoding of qualitative variables
-- [ ] **Class imbalance**: show the class distribution, then offer oversampling, undersampling or class weights
+- [x] **Missing values**: first drop the rows/columns that are too empty (thresholds from Phase 1), then for the rest drop rows or fill in with the mean/median (quantitative) or the most frequent value (qualitative)
+- [x] **Outliers**: detect them with the IQR rule (boxplot rule), then keep, remove or cap them
+- [x] **Qualitative variables with many categories**: merge rare categories into "Other"
+- [x] **Normalization**: none, z-score, or min-max
+- [x] **Dummification**: one-hot encoding of qualitative variables
+- [x] **Class imbalance**: show the class distribution, then offer oversampling, undersampling or class weights
 - [x] **Manual drop**: the user can delete any columns they judge useless (`selectInput(multiple = TRUE)`), and rows (select them in the `DT` table, or by condition / by index)
-- [ ] **Merge columns** when needed:
+- [x] **Merge columns** when needed:
   - quantitative: combine with an operation (sum, mean, difference, ratio) into a new column
   - qualitative: paste the values together (e.g. `A` + `B` → `A_B`)
   - the user names the new column and chooses whether to keep or drop the originals
-- [ ] Show the prepared dataset afterwards, with a summary of what was changed
+- [x] Show the prepared dataset afterwards, with a summary of what was changed
 
 > **Note: history of processing steps (undo)**
 > Every operation (drop, merge, imputation, outliers, normalization, dummification, rebalancing…) is recorded in a **history list**:
