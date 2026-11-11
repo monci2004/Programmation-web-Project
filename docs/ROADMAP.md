@@ -28,7 +28,7 @@ All steps share one `reactiveValues` object that holds the raw data and the prep
 - [x] Agree on the app layout (one `app.R` or `ui.R` + `server.R` + `R/` helper files)
 - [x] Pick the R packages (see the list below) and check they install
 - [x] Do a test deployment of a "hello world" app on shinyapps.io now, so deployment problems show up early → https://ethica79.shinyapps.io/projet_mlds/
-- [x] Set up Git or another shared folder for the group → https://github.com/monci2004/Programmation-web-Project
+- [x] Set up Git or another shared folder for the group → https://github.com/MLSD-UParisCite-projects/Programmation-web-Project
 
 ## Review of the demo `app.R` (Achraf, 2026-10-27)
 
